@@ -15,7 +15,7 @@ struct WeatherAppApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(themeManager)
+                .modelContainer(for: City.self)
         }
-        .modelContainer(for: City.self)
     }
 }
