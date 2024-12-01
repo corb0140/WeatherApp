@@ -16,5 +16,6 @@ struct WeatherAppApp: App {
             ContentView()
                 .environmentObject(themeManager)
         }
+        .modelContainer(for: City.self)
     }
 }
