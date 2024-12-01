@@ -55,7 +55,7 @@ struct CityListView: View {
                             Spacer()
 
                             Button {
-                                let city = City(name: "other", degree: "12º", image: "test")
+                                let city = City(name: "Ottawa", degree: "12º", image: "cloud.sun.rain.fill")
 
                                 do {
                                     context.insert(city)
@@ -75,6 +75,21 @@ struct CityListView: View {
                                 .textCase(.uppercase)
                                 .padding()
 
+                            Button {
+                                do {
+                                    for city in cities {
+                                        context.delete(city)
+                                    }
+                                    try context.save()
+                                } catch {
+                                    print("Error clearing cities: \(error)")
+                                }
+
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .font(.title)
+                            }
+
                             Spacer()
                         }
                     }
@@ -85,10 +100,30 @@ struct CityListView: View {
                 NavigationStack {
                     List(cities) {
                         city in VStack {
-                            Text(city.name)
-                                .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
+                            HStack {
+                                Text(city.name)
+                                    .foregroundStyle(Color.white)
+                                    .font(.montserrat(22, weight: .medium))
+
+                                Spacer()
+
+                                Image(systemName: city.image)
+                                    .font(.title2)
+                                    .symbolRenderingMode(.multicolor)
+
+                                Spacer()
+
+                                Text(city.degree)
+                                    .foregroundStyle(Color.white)
+                                    .font(.montserrat(22, weight: .medium))
+                            }
+                            .padding()
+                            .background(themeManager.isDarkMode ? .light : Color.gray.opacity(0.1))
+                            .cornerRadius(20)
                         }
+                        .padding(2)
                         .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
+                        .listRowSeparator(.hidden)
                     }
                     .scrollContentBackground(.hidden)
                     .listStyle(.plain)
