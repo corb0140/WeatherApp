@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct CityWeatherDetailView: View {
+    @Binding var isDetailActive: Bool
+
     var cityName: String = ""
 
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text(cityName)
     }
 }
 
-#Preview {
-    CityWeatherDetailView(cityName: "Ottawa")
-}
+// #Preview {
+//    CityWeatherDetailView(cityName: "Ottawa")
+// }
