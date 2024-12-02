@@ -56,7 +56,9 @@ struct AddCitySheet: View {
                                                 name: weatherData.name,
                                                 temperature: weatherData.temperature,
                                                 icon: weatherData.icon,
-                                                cityDescription: weatherData.description
+                                                cityDescription: weatherData.description,
+                                                latitude: weatherData.latitude,
+                                                longitude: weatherData.longitude
                                             )
 
                                             context.insert(newCity)

@@ -15,13 +15,17 @@ final class City {
     var temperature: Double
     var icon: String
     var cityDescription: String
+    var latitude: Double
+    var longitude: Double
 
-    init(id: Int, name: String, temperature: Double, icon: String, cityDescription: String) {
+    init(id: Int, name: String, temperature: Double, icon: String, cityDescription: String, latitude: Double, longitude: Double) {
         self.id = id
         self.name = name
         self.temperature = temperature
         self.icon = icon
         self.cityDescription = cityDescription
+        self.latitude = latitude
+        self.longitude = longitude
     }
 }
 
@@ -31,7 +35,10 @@ struct CityListView: View {
     @Environment(\.modelContext) var context
     @State private var showAddCitySheet: Bool = false
     @State private var cityName: String = ""
+    @State private var cityTemp: Double = 0.0
     @State private var cityIcon: String = ""
+    @State private var latitude: Double = 0
+    @State private var longitude: Double = 0
     @State private var showRemoveCitiesActionSheet: Bool = false
     @State private var showRemoveCityActionSheet: Bool = false
     @Binding var isDetailActive: Bool
@@ -39,7 +46,6 @@ struct CityListView: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             themeManager.isDarkMode ? Color.dark : Color.light
-//            NavigationStack {
             VStack(spacing: 0) {
                 HStack {
                     Spacer()
@@ -126,7 +132,6 @@ struct CityListView: View {
                             VStack(alignment: .center) {
                                 if let weatherSymbol = symbolsMatch(from: cityIcon) {
                                     Image(systemName: weatherSymbol.rawValue)
-//                                            .padding(.trailing, 16)
                                         .font(.system(size: 100))
                                         .symbolRenderingMode(.multicolor)
                                         .background(
@@ -149,7 +154,15 @@ struct CityListView: View {
                                 }
 
                                 if !cityName.isEmpty {
-                                    NavigationLink(destination: CityWeatherDetailView(isDetailActive: $isDetailActive, cityName: cityName)) {
+                                    NavigationLink(
+                                        destination: CityWeatherDetailView(
+                                            isDetailActive: $isDetailActive,
+                                            cityName: cityName,
+                                            temperature: cityTemp,
+                                            latitude: latitude,
+                                            longitude: longitude
+                                        )
+                                    ) {
                                         Text("View Details")
                                             .foregroundStyle(
                                                 themeManager.isDarkMode ? .customColorDark : .customColorLight
@@ -225,7 +238,10 @@ struct CityListView: View {
                     .listRowSeparator(.hidden)
                     .onTapGesture {
                         cityName = city.name
+                        cityTemp = city.temperature
                         cityIcon = city.icon
+                        latitude = city.latitude
+                        longitude = city.longitude
                     }
                 }
                 .scrollContentBackground(.hidden)
