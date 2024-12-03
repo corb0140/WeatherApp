@@ -16,9 +16,16 @@ struct CityWeatherDetailView: View {
     @State var latitude: Double = 0.0
     @State var longitude: Double = 0.0
 
+    @State private var errorMessage: String = ""
+
+//    @State var id: UUID
+    @State var uvIndex: Double = 0.0
+    @State var humidity: Double = 0.0
+    @State var windSpeed: Double = 0.0
+
     var body: some View {
         NavigationView {
-            if let color = colorsMatch(from: 35) {
+            if let color = colorsMatch(from: Int(humidity)) {
                 ZStack(alignment: .top) {
                     MapView(latitude: latitude, longitude: longitude)
 
@@ -46,88 +53,87 @@ struct CityWeatherDetailView: View {
                     }
                     .padding(.top, 20)
 
-                    VStack(spacing: -5) {
+                    VStack(spacing: 5) {
                         Spacer()
 
                         HStack {
-                            HStack {
-                                VStack(alignment: .center, spacing: 10) {
-                                    HStack(spacing: 5) {
-                                        Image(systemName: "sun.max.fill")
+                            VStack(alignment: .center, spacing: 10) {
+                                HStack(spacing: 5) {
+                                    Image(systemName: "sun.max.fill")
 
-                                        Text("UV Index")
-                                            .font(.montserrat(12, weight: .medium))
-                                    }
-
-                                    Text("0")
+                                    Text("UV Index")
                                         .font(.montserrat(15, weight: .medium))
                                 }
-                                .foregroundStyle(.white)
 
-                                Spacer()
-
-                                Rectangle()
-                                    .frame(width: 2, height: 60)
-                                    .foregroundStyle(Color.white.opacity(0.4))
-
-                                Spacer()
-
-                                VStack(alignment: .center, spacing: 10) {
-                                    HStack(spacing: 5) {
-                                        Image(systemName: "wind")
-
-                                        Text("Wind")
-                                            .font(.montserrat(12, weight: .medium))
-                                    }
-
-                                    Text("12 m/s")
-                                        .font(.montserrat(15, weight: .medium))
-                                }
-                                .foregroundStyle(.white)
-
-                                Spacer()
-
-                                Rectangle()
-                                    .frame(width: 2, height: 60)
-                                    .foregroundStyle(Color.white.opacity(0.4))
-
-                                Spacer()
-
-                                VStack(alignment: .center, spacing: 10) {
-                                    HStack(spacing: 5) {
-                                        Image(systemName: "humidity.fill")
-                                        Text("Humidity")
-                                            .font(.montserrat(12, weight: .medium))
-                                    }
-
-                                    Text("49%")
-                                        .font(.montserrat(15, weight: .medium))
-                                }
-                                .foregroundStyle(.white)
+                                Text("0")
+                                    .font(.montserrat(15, weight: .medium))
                             }
-                            .padding()
-                            .frame(width: 320, height: 150)
-                            .background(color.color)
-                            .cornerRadius(20)
-                        }
-                        .padding()
-                        .frame(width: 360, height: 200)
-                        .background(Color.white)
-                        .cornerRadius(20)
+                            .foregroundStyle(.white)
 
-                        HStack {
-                            HStack {}
-                                .padding()
-                                .frame(width: 320, height: 150)
-                                .background(color.color)
-                                .cornerRadius(20)
+                            Spacer()
+
+                            Rectangle()
+                                .frame(width: 2, height: 60)
+                                .foregroundStyle(Color.white.opacity(0.4))
+
+                            Spacer()
+
+                            VStack(alignment: .center, spacing: 10) {
+                                HStack(spacing: 5) {
+                                    Image(systemName: "wind")
+
+                                    Text("Wind")
+                                        .font(.montserrat(15, weight: .medium))
+                                }
+
+                                Text(String(windSpeed))
+                                    .font(.montserrat(15, weight: .medium))
+                            }
+                            .foregroundStyle(.white)
+
+                            Spacer()
+
+                            Rectangle()
+                                .frame(width: 2, height: 60)
+                                .foregroundStyle(Color.white.opacity(0.4))
+
+                            Spacer()
+
+                            VStack(alignment: .center, spacing: 10) {
+                                HStack(spacing: 5) {
+                                    Image(systemName: "humidity.fill")
+                                    Text("Humidity")
+                                        .font(.montserrat(15, weight: .medium))
+                                }
+
+                                Text(String(humidity))
+                                    .font(.montserrat(15, weight: .medium))
+                            }
+                            .foregroundStyle(.white)
                         }
                         .padding()
-                        .frame(width: 360, height: 200)
-                        .background(Color.white)
+                        .frame(width: 360, height: 100)
+                        .background(color.color)
                         .cornerRadius(20)
                     }
                     .padding(.bottom, 70)
+                }
+                .onAppear {
+                    Task {
+                        let results = try await HTTPClient2.asyncFetchWeatherDayData(for: cityName)
+                        switch results {
+                            case .success(let weatherDayData):
+//                                id = weatherDayData.id
+                                uvIndex = weatherDayData.uv
+                                windSpeed = weatherDayData.wind
+                                humidity = weatherDayData.humidity
+
+                                print(weatherDayData.humidity)
+
+                            case .failure(let error):
+                                errorMessage = "Failed to fetch weather data: \(error.localizedDescription)"
+                        }
+                    }
                 }
                 .navigationBarHidden(true)
 

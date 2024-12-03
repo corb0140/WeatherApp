@@ -126,70 +126,85 @@ struct CityListView: View {
                             Spacer()
                         }
 
-                        HStack(alignment: .center) {
-                            Spacer()
+                        if !cities.isEmpty {
+                            HStack(alignment: .center) {
+                                Spacer()
 
-                            VStack(alignment: .center) {
-                                if let weatherSymbol = symbolsMatch(from: cityIcon) {
-                                    Image(systemName: weatherSymbol.rawValue)
-                                        .font(.system(size: 100))
-                                        .symbolRenderingMode(.multicolor)
-                                        .background(
-                                            ZStack {
-                                                Color.clear
-                                                    .background(.ultraThinMaterial)
-                                                    .clipShape(Circle())
-                                            }
-                                            .blur(radius: 100)
-                                        )
-                                } else {
-                                    Text("No Icon Found")
-                                }
-
-                                if !cityName.isEmpty {
-                                    Text(cityName)
-                                        .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
-                                        .font(.montserrat(25, weight: .medium))
-                                        .padding(.top, 5)
-                                }
-
-                                if !cityName.isEmpty {
-                                    NavigationLink(
-                                        destination: CityWeatherDetailView(
-                                            isDetailActive: $isDetailActive,
-                                            cityName: cityName,
-                                            temperature: cityTemp,
-                                            latitude: latitude,
-                                            longitude: longitude
-                                        )
-                                    ) {
-                                        Text("View Details")
-                                            .foregroundStyle(
-                                                themeManager.isDarkMode ? .customColorDark : .customColorLight
-                                            )
-                                            .padding(12)
-                                            .font(.montserrat(20, weight: .medium))
+                                VStack(alignment: .center) {
+                                    if let weatherSymbol = symbolsMatch(from: cityIcon) {
+                                        Image(systemName: weatherSymbol.rawValue)
+                                            .font(.system(size: 100))
+                                            .symbolRenderingMode(.multicolor)
                                             .background(
-                                                RoundedRectangle(cornerRadius: 10)
-                                                    .fill(Color.blue.opacity(0))
+                                                ZStack {
+                                                    Color.clear
+                                                        .background(.ultraThinMaterial)
+                                                        .clipShape(Circle())
+                                                }
+                                                .blur(radius: 100)
                                             )
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 10)
-                                                    .stroke(Color.blue, lineWidth: 2)
-                                            )
+                                    } else {
+                                        Text("No Icon Found")
                                     }
-                                } else {
-                                    VStack {
-                                        Text("Please click on city ")
-                                            .padding(12)
-                                            .foregroundStyle(Color.red)
-                                            .font(.system(size: 16, weight: .medium))
+
+                                    if !cityName.isEmpty {
+                                        Text(cityName)
+                                            .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
+                                            .font(.montserrat(25, weight: .medium))
+                                            .padding(.top, 5)
+                                    }
+
+                                    if !cityName.isEmpty {
+                                        NavigationLink(
+                                            destination: CityWeatherDetailView(
+                                                isDetailActive: $isDetailActive,
+                                                cityName: cityName,
+                                                temperature: cityTemp,
+                                                latitude: latitude,
+                                                longitude: longitude
+                                            )
+                                        ) {
+                                            Text("More Details")
+                                                .foregroundStyle(
+                                                    themeManager.isDarkMode ? .customColorDark : .customColorLight
+                                                )
+                                                .padding([.leading, .trailing], 15)
+                                                .padding([.top, .bottom], 8)
+                                                .font(.montserrat(16, weight: .medium))
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 10)
+                                                        .fill(Color.blue.opacity(0))
+                                                )
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 10)
+                                                        .stroke(Color.blue, lineWidth: 2)
+                                                )
+                                        }
+                                    } else {
+                                        VStack {
+                                            Text("Please click on a city ")
+                                                .padding(12)
+                                                .foregroundStyle(Color.blue)
+                                                .font(.montserrat(16, weight: .medium))
+                                        }
                                     }
                                 }
-                            }
-                            .padding()
+                                .padding()
 
-                            Spacer()
+                                Spacer()
+                            }
+                        } else {
+                            VStack(alignment: .center) {
+                                Spacer()
+
+                                Text("Add a city to get started")
+                                    .font(.montserrat(20, weight: .bold))
+                                    .foregroundStyle(Color.blue)
+                                    .textCase(.uppercase)
+
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
                     }
                 }

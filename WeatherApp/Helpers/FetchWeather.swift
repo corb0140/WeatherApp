@@ -62,3 +62,56 @@ enum HTTPClient {
         }
     }
 }
+
+// other weather api
+
+struct OtherWeatherResponse: Codable {
+    let forecast: Forecast
+}
+
+struct Forecast: Codable {
+    let forecastday: [ForecastDay]
+}
+
+struct ForecastDay: Codable {
+    let day: Day
+}
+
+struct Day: Codable {
+    let maxwind_mph: Double
+    let avghumidity: Double
+    let uv: Double
+}
+
+struct WeatherDayData: Identifiable {
+    let id: UUID
+    let uv: Double
+    let wind: Double
+    let humidity: Double
+
+    init(from response: OtherWeatherResponse) {
+        self.id = UUID()
+        self.uv = response.forecast.forecastday.first?.day.uv ?? 0.0
+        self.wind = response.forecast.forecastday.first?.day.maxwind_mph ?? 0.0
+        self.humidity = response.forecast.forecastday.first?.day.avghumidity ?? 0.0
+    }
+}
+
+enum HTTPClient2 {
+    static func asyncFetchWeatherDayData(for city: String) async throws -> Result<WeatherDayData, Error> {
+        guard let url = URL(string: "https://api.weatherapi.com/v1/forecast.json?key=0f1ef32d400b4032afe02431240902&q=\(city)&days=1&aqi=no&alerts=no")
+        else {
+            return .failure(URLError(.badURL))
+        }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let otherWeatherResponse = try JSONDecoder().decode(OtherWeatherResponse.self, from: data)
+            let weatherData = WeatherDayData(from: otherWeatherResponse)
+            return .success(weatherData)
+        } catch {
+            print("Error decoding weather data: \(error)")
+            return .failure(error)
+        }
+    }
+}
