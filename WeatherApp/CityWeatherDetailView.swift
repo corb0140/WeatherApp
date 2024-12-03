@@ -18,10 +18,11 @@ struct CityWeatherDetailView: View {
 
     @State private var errorMessage: String = ""
 
-//    @State var id: UUID
     @State var uvIndex: Double = 0.0
     @State var humidity: Double = 0.0
     @State var windSpeed: Double = 0.0
+    @State var hour: [Hourly] = []
+    @State var description: String = ""
 
     var body: some View {
         NavigationView {
@@ -42,19 +43,21 @@ struct CityWeatherDetailView: View {
                             )
                         )
 
-                    VStack {
-                        Text(cityName)
-                            .foregroundStyle(.white)
-                            .font(.montserrat(55, weight: .bold))
+                    VStack(spacing: 50) {
+                        VStack {
+                            Text(cityName)
+                                .foregroundStyle(.white)
+                                .font(.montserrat(55, weight: .bold))
 
-                        Text("\(String(format: "%.0f", temperature))°C")
-                            .foregroundStyle(Color.white)
-                            .font(.montserrat(60, weight: .bold))
-                    }
-                    .padding(.top, 20)
+                            Text("\(String(format: "%.0f", temperature))°C")
+                                .foregroundStyle(Color.white)
+                                .font(.montserrat(60, weight: .bold))
 
-                    VStack(spacing: 5) {
-                        Spacer()
+                            Text(description)
+                                .foregroundStyle(Color.white)
+                                .font(.montserrat(40, weight: .medium))
+                        }
+                        .padding(.top, 20)
 
                         HStack {
                             VStack(alignment: .center, spacing: 10) {
@@ -115,20 +118,52 @@ struct CityWeatherDetailView: View {
                         .frame(width: 360, height: 100)
                         .background(color.color)
                         .cornerRadius(20)
+
+                        Spacer()
+
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Today")
+                                .font(.montserrat(18, weight: .medium))
+
+                            List(hour, id: \.time) { hourData in
+                                HStack(spacing: 40) {
+                                    VStack {
+                                        Text("\(hourData.temp_c, specifier: "%.0f")°")
+
+                                        AsyncImage(url: URL(string: "https:\(hourData.condition.icon)")) { image in
+                                            image
+                                                .resizable()
+                                                .frame(width: 40, height: 40)
+                                        } placeholder: {
+                                            ProgressView()
+                                        }
+
+                                        Text(hourData.time)
+                                    }
+                                    .padding([.top, .bottom], 20)
+                                    .padding([.leading, .trailing], 25)
+                                    .background(Color.black.opacity(0.5))
+                                    .cornerRadius(20)
+                                    .onAppear {
+                                        description = hourData.condition.text
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.bottom, 50)
                     }
-                    .padding(.bottom, 70)
                 }
                 .onAppear {
                     Task {
                         let results = try await HTTPClient2.asyncFetchWeatherDayData(for: cityName)
                         switch results {
                             case .success(let weatherDayData):
-//                                id = weatherDayData.id
                                 uvIndex = weatherDayData.uv
                                 windSpeed = weatherDayData.wind
                                 humidity = weatherDayData.humidity
+                                hour = weatherDayData.hour
 
-                                print(weatherDayData.humidity)
+                                print(hour)
 
                             case .failure(let error):
                                 errorMessage = "Failed to fetch weather data: \(error.localizedDescription)"

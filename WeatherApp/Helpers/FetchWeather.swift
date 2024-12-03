@@ -1,5 +1,6 @@
 import Foundation
 
+// openweatherapi
 struct WeatherResponse: Codable {
     let main: MainWeather
     let weather: [WeatherCondition]
@@ -63,8 +64,7 @@ enum HTTPClient {
     }
 }
 
-// other weather api
-
+// weatherapi
 struct OtherWeatherResponse: Codable {
     let forecast: Forecast
 }
@@ -75,6 +75,7 @@ struct Forecast: Codable {
 
 struct ForecastDay: Codable {
     let day: Day
+    let hour: [Hourly]
 }
 
 struct Day: Codable {
@@ -83,17 +84,30 @@ struct Day: Codable {
     let uv: Double
 }
 
+struct Hourly: Codable {
+    let time: String
+    let temp_c: Double
+    let condition: Condition
+}
+
+struct Condition: Codable {
+    let text: String
+    let icon: String
+}
+
 struct WeatherDayData: Identifiable {
     let id: UUID
     let uv: Double
     let wind: Double
     let humidity: Double
+    let hour: [Hourly]
 
     init(from response: OtherWeatherResponse) {
         self.id = UUID()
         self.uv = response.forecast.forecastday.first?.day.uv ?? 0.0
         self.wind = response.forecast.forecastday.first?.day.maxwind_mph ?? 0.0
         self.humidity = response.forecast.forecastday.first?.day.avghumidity ?? 0.0
+        self.hour = response.forecast.forecastday.first?.hour ?? []
     }
 }
 
