@@ -67,6 +67,15 @@ enum HTTPClient {
 // weatherapi
 struct OtherWeatherResponse: Codable {
     let forecast: Forecast
+    let current: Current
+}
+
+struct Current: Codable {
+    let temp_c: Double
+    let temp_f: Double
+    let wind_mph: Double
+    let humidity: Double
+    let uv: Double
 }
 
 struct Forecast: Codable {
@@ -74,14 +83,7 @@ struct Forecast: Codable {
 }
 
 struct ForecastDay: Codable {
-    let day: Day
     let hour: [Hourly]
-}
-
-struct Day: Codable {
-    let maxwind_mph: Double
-    let avghumidity: Double
-    let uv: Double
 }
 
 struct Hourly: Codable {
@@ -101,13 +103,17 @@ struct WeatherDayData: Identifiable {
     let wind: Double
     let humidity: Double
     let hour: [Hourly]
+    let temp_c: Double
+    let temp_f: Double
 
     init(from response: OtherWeatherResponse) {
         self.id = UUID()
-        self.uv = response.forecast.forecastday.first?.day.uv ?? 0.0
-        self.wind = response.forecast.forecastday.first?.day.maxwind_mph ?? 0.0
-        self.humidity = response.forecast.forecastday.first?.day.avghumidity ?? 0.0
+        self.uv = response.current.uv
+        self.wind = response.current.wind_mph
+        self.humidity = response.current.humidity
         self.hour = response.forecast.forecastday.first?.hour ?? []
+        self.temp_c = response.current.temp_c
+        self.temp_f = response.current.temp_f
     }
 }
 

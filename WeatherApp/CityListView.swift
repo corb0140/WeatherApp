@@ -37,6 +37,7 @@ struct CityListView: View {
     @State private var cityName: String = ""
     @State private var cityTemp: Double = 0.0
     @State private var cityIcon: String = ""
+    @State private var cityDescription: String = ""
     @State private var latitude: Double = 0
     @State private var longitude: Double = 0
     @State private var showRemoveCitiesActionSheet: Bool = false
@@ -159,7 +160,7 @@ struct CityListView: View {
                                             destination: CityWeatherDetailView(
                                                 isDetailActive: $isDetailActive,
                                                 cityName: cityName,
-                                                temperature: cityTemp,
+                                                description: cityDescription,
                                                 latitude: latitude,
                                                 longitude: longitude
                                             )
@@ -253,7 +254,7 @@ struct CityListView: View {
                     .listRowSeparator(.hidden)
                     .onTapGesture {
                         cityName = city.name
-                        cityTemp = city.temperature
+                        cityDescription = city.cityDescription
                         cityIcon = city.icon
                         latitude = city.latitude
                         longitude = city.longitude

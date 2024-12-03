@@ -28,15 +28,15 @@ enum ColorsMatch {
 
 func colorsMatch(from value: Int) -> ColorsMatch? {
     switch value {
-    case ..<20:
+    case ..<10:
         return .cyan
-    case 20..<30:
+    case 10..<15:
         return .blue
-    case 30..<41:
+    case 16..<20:
         return .green
-    case 41..<61:
+    case 20..<40:
         return .orange
-    case 61...:
+    case 40...:
         return .red
     default:
         return nil

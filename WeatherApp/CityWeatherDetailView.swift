@@ -12,7 +12,7 @@ struct CityWeatherDetailView: View {
     @Binding var isDetailActive: Bool
 
     @State var cityName: String = ""
-    @State var temperature: Double = 0.0
+    @State var description: String = ""
     @State var latitude: Double = 0.0
     @State var longitude: Double = 0.0
 
@@ -22,11 +22,14 @@ struct CityWeatherDetailView: View {
     @State var humidity: Double = 0.0
     @State var windSpeed: Double = 0.0
     @State var hour: [Hourly] = []
-    @State var description: String = ""
+    @State var temp_C: Double = 0.0
+    @State var temp_F: Double = 0.0
+
+    @State private var isCelsius: Bool = true
 
     var body: some View {
         NavigationView {
-            if let color = colorsMatch(from: Int(humidity)) {
+            if let color = colorsMatch(from: Int(temp_C)) {
                 ZStack(alignment: .top) {
                     MapView(latitude: latitude, longitude: longitude)
 
@@ -49,9 +52,12 @@ struct CityWeatherDetailView: View {
                                 .foregroundStyle(.white)
                                 .font(.montserrat(55, weight: .bold))
 
-                            Text("\(String(format: "%.0f", temperature))°C")
+                            Text("\(String(format: "%.0f", isCelsius ? temp_C : temp_F))°\(isCelsius ? "C" : "F")")
                                 .foregroundStyle(Color.white)
                                 .font(.montserrat(60, weight: .bold))
+                                .onTapGesture {
+                                    isCelsius.toggle()
+                                }
 
                             Text(description)
                                 .foregroundStyle(Color.white)
@@ -150,9 +156,6 @@ struct CityWeatherDetailView: View {
                                         .padding([.leading, .trailing], 25)
                                         .background(Color.black.opacity(0.6))
                                         .cornerRadius(20)
-                                        .onAppear {
-                                            description = hourData.condition.text
-                                        }
                                     }
                                 }
                             }
@@ -170,6 +173,8 @@ struct CityWeatherDetailView: View {
                                 windSpeed = weatherDayData.wind
                                 humidity = weatherDayData.humidity
                                 hour = weatherDayData.hour
+                                temp_C = weatherDayData.temp_c
+                                temp_F = weatherDayData.temp_f
 
                             case .failure(let error):
                                 errorMessage = "Failed to fetch weather data: \(error.localizedDescription)"
