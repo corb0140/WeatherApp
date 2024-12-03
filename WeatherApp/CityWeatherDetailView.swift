@@ -55,7 +55,7 @@ struct CityWeatherDetailView: View {
 
                             Text(description)
                                 .foregroundStyle(Color.white)
-                                .font(.montserrat(40, weight: .medium))
+                                .font(.montserrat(40, weight: .bold))
                         }
                         .padding(.top, 20)
 
@@ -123,32 +123,40 @@ struct CityWeatherDetailView: View {
 
                         VStack(alignment: .leading, spacing: 20) {
                             Text("Today")
-                                .font(.montserrat(18, weight: .medium))
+                                .font(.montserrat(18, weight: .bold))
+                                .foregroundStyle(Color.white)
+                                .padding(.leading, 25)
 
-                            List(hour, id: \.time) { hourData in
-                                HStack(spacing: 40) {
-                                    VStack {
-                                        Text("\(hourData.temp_c, specifier: "%.0f")°")
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 20) {
+                                    ForEach(hour, id: \.time) { hourData in
+                                        VStack {
+                                            Text("\(hourData.temp_c, specifier: "%.0f")°")
+                                                .foregroundStyle(Color.white)
 
-                                        AsyncImage(url: URL(string: "https:\(hourData.condition.icon)")) { image in
-                                            image
-                                                .resizable()
-                                                .frame(width: 40, height: 40)
-                                        } placeholder: {
-                                            ProgressView()
+                                            AsyncImage(url: URL(string: "https:\(hourData.condition.icon)")) { image in
+                                                image
+                                                    .resizable()
+                                                    .frame(width: 40, height: 40)
+                                            } placeholder: {
+                                                ProgressView()
+                                            }
+
+                                            let timeOnly = hourData.time.split(separator: " ").last ?? ""
+                                            Text(String(timeOnly))
+                                                .foregroundStyle(Color.white)
                                         }
-
-                                        Text(hourData.time)
-                                    }
-                                    .padding([.top, .bottom], 20)
-                                    .padding([.leading, .trailing], 25)
-                                    .background(Color.black.opacity(0.5))
-                                    .cornerRadius(20)
-                                    .onAppear {
-                                        description = hourData.condition.text
+                                        .padding([.top, .bottom], 20)
+                                        .padding([.leading, .trailing], 25)
+                                        .background(Color.black.opacity(0.6))
+                                        .cornerRadius(20)
+                                        .onAppear {
+                                            description = hourData.condition.text
+                                        }
                                     }
                                 }
                             }
+                            .padding([.leading, .trailing], 20)
                         }
                         .padding(.bottom, 50)
                     }
@@ -162,8 +170,6 @@ struct CityWeatherDetailView: View {
                                 windSpeed = weatherDayData.wind
                                 humidity = weatherDayData.humidity
                                 hour = weatherDayData.hour
-
-                                print(hour)
 
                             case .failure(let error):
                                 errorMessage = "Failed to fetch weather data: \(error.localizedDescription)"
