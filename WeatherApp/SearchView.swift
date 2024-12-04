@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct SearchView: View {
+    @EnvironmentObject var themeManager: ThemeManager
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            themeManager.isDarkMode ? Color.dark : Color.light
+        }
+        .ignoresSafeArea()
     }
 }
 

@@ -6,6 +6,7 @@ struct WeatherResponse: Codable {
     let weather: [WeatherCondition]
     let name: String
     let id: Int
+    let dt: Int
     let coord: WeatherCoordinates
 }
 
@@ -27,6 +28,7 @@ struct WeatherCondition: Codable {
 struct WeatherData: Identifiable {
     let id: Int
     let name: String
+    let dt: Int
     let temperature: Double
     let icon: String
     let description: String
@@ -37,6 +39,7 @@ struct WeatherData: Identifiable {
     init(from response: WeatherResponse) {
         self.id = response.id
         self.name = response.name
+        self.dt = response.dt
         self.temperature = response.main.temp
         self.icon = response.weather.first?.icon ?? ""
         self.description = response.weather.first?.description ?? ""

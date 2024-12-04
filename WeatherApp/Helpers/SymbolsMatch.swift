@@ -47,6 +47,6 @@ func symbolsMatch(from symbol: String) -> WeatherSymbols? {
         case "50d", "50n":
             return .mist
         default:
-            return .noSelection
+            return nil
     }
 }

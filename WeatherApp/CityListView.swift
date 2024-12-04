@@ -5,35 +5,13 @@
 //  Created by Mark Corbin on 2024-11-28.
 //
 
-import SwiftData
 import SwiftUI
-
-@Model
-final class City {
-    var id: Int
-    var name: String
-    var temperature: Double
-    var icon: String
-    var cityDescription: String
-    var latitude: Double
-    var longitude: Double
-
-    init(id: Int, name: String, temperature: Double, icon: String, cityDescription: String, latitude: Double, longitude: Double) {
-        self.id = id
-        self.name = name
-        self.temperature = temperature
-        self.icon = icon
-        self.cityDescription = cityDescription
-        self.latitude = latitude
-        self.longitude = longitude
-    }
-}
 
 struct CityListView: View {
     @EnvironmentObject var themeManager: ThemeManager
-    @Query var cities: [City]
-    @Environment(\.modelContext) var context
+    @EnvironmentObject var cityManager: CityManager
     @State private var showAddCitySheet: Bool = false
+    @State private var cityId: Int = 0
     @State private var cityName: String = ""
     @State private var cityTemp: Double = 0.0
     @State private var cityIcon: String = ""
@@ -77,9 +55,11 @@ struct CityListView: View {
                             }
                             .sheet(isPresented: $showAddCitySheet) {
                                 AddCitySheet(
+                                    addCity: { city in
+                                        cityManager.addCity(city)
+                                    },
                                     showAddCitySheet: $showAddCitySheet
                                 )
-                                .environment(\.modelContext, context)
                                 .presentationDetents(
                                     [.fraction(0.5), .medium, .large]
                                 )
@@ -101,17 +81,10 @@ struct CityListView: View {
                                     ),
                                     buttons: [
                                         .destructive(Text("Delete")) {
-                                            do {
-                                                for city in cities {
-                                                    context.delete(city)
-                                                }
-                                                try context.save()
-                                                cityIcon = ""
-                                                cityName = ""
-                                            } catch {
-                                                print("Error deleting cities: \(error)")
-                                            }
+                                            cityIcon = ""
+                                            cityName = ""
 
+                                            cityManager.removeAllCities()
                                         },
                                         .cancel(Text("Cancel"))
                                     ]
@@ -127,25 +100,61 @@ struct CityListView: View {
                             Spacer()
                         }
 
-                        if !cities.isEmpty {
+                        if !cityManager.cities.isEmpty {
                             HStack(alignment: .center) {
                                 Spacer()
 
                                 VStack(alignment: .center) {
                                     if let weatherSymbol = symbolsMatch(from: cityIcon) {
-                                        Image(systemName: weatherSymbol.rawValue)
-                                            .font(.system(size: 100))
-                                            .symbolRenderingMode(.multicolor)
-                                            .background(
-                                                ZStack {
-                                                    Color.clear
-                                                        .background(.ultraThinMaterial)
-                                                        .clipShape(Circle())
-                                                }
-                                                .blur(radius: 100)
-                                            )
+                                        HStack {
+                                            Spacer()
+
+                                            Image(systemName: weatherSymbol.rawValue)
+                                                .font(.system(size: 100))
+                                                .symbolRenderingMode(.multicolor)
+                                                .background(
+                                                    ZStack {
+                                                        Color.clear
+                                                            .background(.ultraThinMaterial)
+                                                            .clipShape(Circle())
+                                                    }
+                                                    .blur(radius: 100)
+                                                )
+                                                .offset(x: 20)
+
+                                            Spacer()
+
+                                            Button {
+                                                showRemoveCityActionSheet = true
+                                            } label: {
+                                                Image(systemName: "trash")
+                                                    .font(.system(size: 20))
+                                                    .symbolRenderingMode(.multicolor)
+                                            }
+                                            .offset(y: -10)
+                                            .actionSheet(isPresented: $showRemoveCityActionSheet) {
+                                                ActionSheet(
+                                                    title: Text("Delete this city"),
+                                                    message: Text(
+                                                        "Are you sure you want to delete this city"
+                                                    ),
+                                                    buttons: [
+                                                        .destructive(Text("Delete")) {
+                                                            cityIcon = ""
+                                                            cityName = ""
+
+                                                            cityManager
+                                                                .removeCity(byID: cityId)
+                                                        },
+                                                        .cancel(Text("Cancel"))
+                                                    ]
+                                                )
+                                            }
+                                        }
                                     } else {
-                                        Text("No Icon Found")
+                                        Text("No City Selected")
+                                            .font(.montserrat(25, weight: .bold))
+                                            .foregroundStyle(Color.white)
                                     }
 
                                     if !cityName.isEmpty {
@@ -211,25 +220,37 @@ struct CityListView: View {
                 }
                 .background(themeManager.isDarkMode ? Color.dark : Color.light)
 
-                List(cities) {
+                List(cityManager.cities) {
                     city in
                     VStack(spacing: 0) {
                         HStack {
                             Text(city.name)
                                 .foregroundStyle(Color.blue)
-                                .font(.montserrat(22, weight: .medium))
+                                .font(.montserrat(20, weight: .medium))
 
                             Spacer()
+
+                            Text(city.formattedTime)
+                                .foregroundStyle(Color.white)
+                                .font(.montserrat(18, weight: .regular))
                         }
+                        .padding(.bottom, 5)
 
                         HStack {
-                            AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(city.icon)@2x.png")) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 50, height: 50)
-                            } placeholder: {
-                                ProgressView()
+                            if let weatherSymbol = symbolsMatch(from: city.icon) {
+                                Image(systemName: weatherSymbol.rawValue)
+                                    .font(.system(size: 20))
+                                    .symbolRenderingMode(.multicolor)
+                                    .background(
+                                        ZStack {
+                                            Color.clear
+                                                .background(.ultraThinMaterial)
+                                                .clipShape(Circle())
+                                        }
+                                        .blur(radius: 60)
+                                    )
+                            } else {
+                                Text("No Icon Found")
                             }
 
                             Spacer()
@@ -242,10 +263,11 @@ struct CityListView: View {
 
                             Text("\(String(format: "%.0f", city.temperature))°C")
                                 .foregroundStyle(Color.white)
-                                .font(.montserrat(20, weight: .medium))
+                                .font(.montserrat(18, weight: .medium))
                         }
                         .padding(.top, 10)
                     }
+                    .frame(height: 80)
                     .padding([.leading, .trailing], 20)
                     .padding([.top, .bottom], 10)
                     .background(themeManager.isDarkMode ? .light : Color.gray.opacity(0.1))
@@ -253,6 +275,7 @@ struct CityListView: View {
                     .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
                     .listRowSeparator(.hidden)
                     .onTapGesture {
+                        cityId = city.id
                         cityName = city.name
                         cityDescription = city.cityDescription
                         cityIcon = city.icon

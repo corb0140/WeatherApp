@@ -5,11 +5,11 @@
 //  Created by Mark Corbin on 2024-11-30.
 //
 
-import SwiftData
 import SwiftUI
 
 struct AddCitySheet: View {
-    @Environment(\.modelContext) var context
+    var addCity: (City) -> Void
+
     @Binding var showAddCitySheet: Bool
     @State private var name: String = ""
 
@@ -54,6 +54,7 @@ struct AddCitySheet: View {
                                             let newCity = City(
                                                 id: weatherData.id,
                                                 name: weatherData.name,
+                                                dt: weatherData.dt,
                                                 temperature: weatherData.temperature,
                                                 icon: weatherData.icon,
                                                 cityDescription: weatherData.description,
@@ -61,14 +62,8 @@ struct AddCitySheet: View {
                                                 longitude: weatherData.longitude
                                             )
 
-                                            context.insert(newCity)
-
-                                            do {
-                                                try context.save()
-                                                showAddCitySheet = false
-                                            } catch {
-                                                print("try again")
-                                            }
+                                            addCity(newCity)
+                                            showAddCitySheet = false
 
                                         case .failure(let error):
                                             errorMessage = "Failed to fetch weather data: \(error.localizedDescription)"
