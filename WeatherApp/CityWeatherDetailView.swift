@@ -166,7 +166,7 @@ struct CityWeatherDetailView: View {
                 }
                 .onAppear {
                     Task {
-                        let results = try await HTTPClient2.asyncFetchWeatherDayData(for: cityName)
+                        let results = try await WeatherApiHTTPClient.asyncFetchWeatherDayData(for: cityName)
                         switch results {
                             case .success(let weatherDayData):
                                 uvIndex = weatherDayData.uv

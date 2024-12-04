@@ -26,7 +26,7 @@ struct AddCitySheet: View {
             ) {
                 VStack(alignment: .leading, spacing: 15) {
                     VStack(alignment: .leading, spacing: 10) {
-                        TextField("Enter City Name", text: $name)
+                        TextField("Enter A City Name", text: $name)
                             .padding(10)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 5)
@@ -48,7 +48,7 @@ struct AddCitySheet: View {
                                         return
                                     }
 
-                                    let results = try await HTTPClient.asyncFetchWeatherData(for: name)
+                                    let results = try await OpenWeatherApiHTTPClient.asyncFetchWeatherData(for: name)
                                     switch results {
                                         case .success(let weatherData):
                                             let newCity = City(

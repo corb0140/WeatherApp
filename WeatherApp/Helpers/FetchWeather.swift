@@ -49,7 +49,7 @@ struct WeatherData: Identifiable {
     }
 }
 
-enum HTTPClient {
+enum OpenWeatherApiHTTPClient {
     static func asyncFetchWeatherData(for city: String) async throws -> Result<WeatherData, Error> {
         guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?q=\(city)&units=metric&appid=e312cd37938b1616f1cd19dd89e7325a") else {
             return .failure(URLError(.badURL))
@@ -120,7 +120,7 @@ struct WeatherDayData: Identifiable {
     }
 }
 
-enum HTTPClient2 {
+enum WeatherApiHTTPClient {
     static func asyncFetchWeatherDayData(for city: String) async throws -> Result<WeatherDayData, Error> {
         guard let url = URL(string: "https://api.weatherapi.com/v1/forecast.json?key=0f1ef32d400b4032afe02431240902&q=\(city)&days=1&aqi=no&alerts=no")
         else {
@@ -134,6 +134,48 @@ enum HTTPClient2 {
             return .success(weatherData)
         } catch {
             print("Error decoding weather data: \(error)")
+            return .failure(error)
+        }
+    }
+}
+
+// countries & cities
+
+struct CityResponse: Codable {
+    let data: [Data]
+    let msg: String
+}
+
+struct Data: Codable {
+    let cities: [String]
+}
+
+struct CityResponseList: Identifiable {
+    let id: UUID
+    let msg: String
+    let data: [Data]
+
+    init(from response: CityResponse) {
+        self.id = UUID()
+        self.msg = response.msg
+        self.data = response.data
+    }
+}
+
+enum CountryAndCityHTTPClient {
+    static func asyncFetchCities() async throws -> Result<CityResponseList, Error> {
+        guard let url = URL(string: "https://countriesnow.space/api/v0.1/countries")
+        else {
+            return .failure(URLError(.badURL))
+        }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let cityResponse = try JSONDecoder().decode(CityResponse.self, from: data)
+            let cityResponseData = CityResponseList(from: cityResponse)
+            return .success(cityResponseData)
+        } catch {
+            print("Error decoding city data: \(error)")
             return .failure(error)
         }
     }
