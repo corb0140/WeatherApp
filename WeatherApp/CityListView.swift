@@ -22,6 +22,7 @@ struct CityListView: View {
     @State private var showRemoveCityActionSheet: Bool = false
     @Binding var isDetailActive: Bool
 
+
     var body: some View {
         ZStack(alignment: .topTrailing) {
             themeManager.isDarkMode ? Color.dark : Color.light
@@ -46,59 +47,14 @@ struct CityListView: View {
                         HStack {
                             Spacer()
 
-                            Button {
-                                showAddCitySheet = true
-
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.title)
-                            }
-                            .sheet(isPresented: $showAddCitySheet) {
-                                AddCitySheet(
-                                    addCity: { city in
-                                        cityManager.addCity(city)
-                                    },
-                                    showAddCitySheet: $showAddCitySheet
-                                )
-                                .presentationDetents(
-                                    [.fraction(0.5), .medium, .large]
-                                )
-                                .presentationDragIndicator(.visible)
-                            }
-
-                            Button {
-                                showRemoveCitiesActionSheet = true
-
-                            } label: {
-                                Image(systemName: "minus.circle.fill")
-                                    .font(.title)
-                                    .accentColor(.red)
-                            }.actionSheet(isPresented: $showRemoveCitiesActionSheet) {
-                                ActionSheet(
-                                    title: Text("Delete Cities"),
-                                    message: Text(
-                                        "Are you sure you want to delete all cities"
-                                    ),
-                                    buttons: [
-                                        .destructive(Text("Delete")) {
-                                            cityIcon = ""
-                                            cityName = ""
-
-                                            cityManager.removeAllCities()
-                                        },
-                                        .cancel(Text("Cancel"))
-                                    ]
-                                )
-                            }
-
                             Text("World Weather App")
                                 .font(.montserrat(20, weight: .bold))
                                 .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
                                 .textCase(.uppercase)
-                                .padding()
 
                             Spacer()
                         }
+                        .padding(.top, 30)
 
                         if !cityManager.cities.isEmpty {
                             HStack(alignment: .center) {
@@ -120,7 +76,7 @@ struct CityListView: View {
                                                     }
                                                     .blur(radius: 100)
                                                 )
-                                                .offset(x: 20)
+                                                .offset(x: 15)
 
                                             Spacer()
 
@@ -131,7 +87,7 @@ struct CityListView: View {
                                                     .font(.system(size: 20))
                                                     .symbolRenderingMode(.multicolor)
                                             }
-                                            .offset(y: -10)
+                                            .offset(x: -50, y: -30)
                                             .actionSheet(isPresented: $showRemoveCityActionSheet) {
                                                 ActionSheet(
                                                     title: Text("Delete this city"),

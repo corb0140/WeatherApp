@@ -11,30 +11,38 @@ struct ContentView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var isCityWeatherDetailViewActive = false
 
+    @State private var selectedTab: Int = 0
+
     var body: some View {
         NavigationStack {
-            TabView {
+            TabView(selection: $selectedTab) {
                 CityListView(isDetailActive: $isCityWeatherDetailViewActive)
                     .environmentObject(themeManager)
                     .tabItem {
                         Label("Cities", systemImage: "building.2")
                     }
+                    .tag(0)
 
-                SearchView()
+                SearchView(selectedTab: $selectedTab)
                     .environmentObject(themeManager)
                     .tabItem {
                         Label("Search", systemImage: "magnifyingglass")
                     }
+                    .tag(1)
+
                 SettingsView()
                     .environmentObject(themeManager)
                     .tabItem {
                         Label("Settings", systemImage: "gearshape")
                     }
+                    .tag(2)
+
                 AboutView()
                     .environmentObject(themeManager)
                     .tabItem {
                         Label("About", systemImage: "person.fill")
                     }
+                    .tag(3)
             }
             .opacity(isCityWeatherDetailViewActive ? 0 : 1)
             .onAppear {
