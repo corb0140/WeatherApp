@@ -19,7 +19,7 @@ struct AboutView: View {
                     Text("world")
                         .foregroundStyle(Color.blue)
                     Text("weather.")
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
                 }
                 .font(.montserrat(35, weight: .bold))
 
@@ -46,9 +46,11 @@ struct AboutView: View {
                         Text("Hey,")
                             .foregroundStyle(Color.blue)
                         Text("Welcome")
+                            .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
                     }
 
                     Text("To World Weather!")
+                        .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
                 }
                 .foregroundStyle(Color.customColorLight)
                 .font(.montserrat(35, weight: .bold))
@@ -56,9 +58,11 @@ struct AboutView: View {
                 VStack(alignment: .leading, spacing: 25) {
                     Text("This is a city weather app, where you can see weather forecast for any city in the world. Get humidity, uv index, temperature, forcast by the hour and more!")
                         .font(.montserrat(15, weight: .regular))
+                        .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
 
                     Text("Made by Mark Corbin. An aspiring Swift developer @ Algonquin College.")
                         .font(.montserrat(15, weight: .regular))
+                        .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
                 }
 
                 Link(destination: URL(string: "https://portfolio-ruby-nine-59.vercel.app/")!) {
@@ -80,5 +84,5 @@ struct AboutView: View {
 }
 
 #Preview {
-    AboutView()
+//    AboutView()
 }

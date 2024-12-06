@@ -11,7 +11,7 @@ import SwiftUI
 struct WeatherAppApp: App {
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var cityManager = CityManager()
-    @StateObject private var cityRefreshManager = CityRefreshListManager()
+    @StateObject private var cityRefreshManager = CityRefreshManager()
 
     var body: some Scene {
         WindowGroup {

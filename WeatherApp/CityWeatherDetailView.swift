@@ -27,10 +27,6 @@ struct CityWeatherDetailView: View {
 
     @State private var isCelsius: Bool = true
 
-
-
-    @State private var curretTime = Date()
-
     var body: some View {
         NavigationView {
             if let color = colorsMatch(from: Int(temp_C)) {
@@ -187,8 +183,6 @@ struct CityWeatherDetailView: View {
                                 errorMessage = "Failed to fetch weather data: \(error.localizedDescription)"
                         }
                     }
-
-                    print(curretTime)
                 }
                 .navigationBarHidden(true)
 
@@ -199,6 +193,6 @@ struct CityWeatherDetailView: View {
     }
 }
 
-// #Preview {
-//    CityWeatherDetailView(cityName: "Ottawa")
-// }
+#Preview {
+//    CityWeatherDetailView()
+}

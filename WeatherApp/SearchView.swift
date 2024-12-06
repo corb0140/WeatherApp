@@ -10,7 +10,7 @@ import SwiftUI
 struct SearchView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var cityManager: CityManager
-    @EnvironmentObject var cityRefreshListManager: CityRefreshListManager
+    @EnvironmentObject var cityRefreshManager: CityRefreshManager
 
     @State var citiesList: [(id: UUID, name: String)] = []
     @State var city: String = ""
@@ -87,6 +87,17 @@ struct SearchView: View {
                                                 cityManager.addCity(newCity)
                                                 selectedTab = 0
 
+                                                let city = CityName(
+                                                    id: weatherData.id,
+                                                    name: weatherData.name
+                                                )
+
+                                                cityRefreshManager
+                                                    .addCityToList(city)
+
+                                                print(
+                                                    cityRefreshManager.citiesRefreshList.map { $0.name })
+
                                             case .failure(let error):
                                                 errorMessage = "Failed to fetch weather data: \(error.localizedDescription)"
                                         }
@@ -100,7 +111,7 @@ struct SearchView: View {
                             .padding([.leading, .trailing], 20)
                             .padding([.top, .bottom], 18)
                             .frame(width: 370)
-                            .background(themeManager.isDarkMode ? Color.black.opacity(0.8) : Color.gray.opacity(0.1))
+                            .background(themeManager.isDarkMode ? Color.black.opacity(0.5) : Color.gray.opacity(0.1))
                             .cornerRadius(5)
                         }
                         .background(themeManager.isDarkMode ? Color.dark : Color.light)
@@ -123,6 +134,6 @@ struct SearchView: View {
     }
 }
 
-// #Preview {
+#Preview {
 //    SearchView()
-// }
+}

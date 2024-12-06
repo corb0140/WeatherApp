@@ -30,23 +30,15 @@ struct CityListView: View {
                     Spacer()
 
                     VStack(alignment: .trailing) {
-                        VStack {
-                            Toggle("", isOn: $themeManager.isDarkMode)
-                                .animation(
-                                    .easeOut(duration: 0.8),
-                                    value: themeManager.isDarkMode
-                                )
-                                .toggleStyle(ThemeManager.CustomToggleStyle())
-                                .onTapGesture {
-                                    themeManager.isDarkMode.toggle()
-                                }
-                                .padding(.trailing)
-                        }
-
-                        HStack {
+                        HStack(spacing: 0) {
                             Spacer()
 
-                            Text("World Weather App")
+                            Text("World")
+                                .font(.montserrat(20, weight: .bold))
+                                .foregroundStyle(Color.blue)
+                                .textCase(.uppercase)
+
+                            Text("Weather App")
                                 .font(.montserrat(20, weight: .bold))
                                 .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
                                 .textCase(.uppercase)
@@ -246,6 +238,6 @@ struct CityListView: View {
     }
 }
 
-// #Preview {
-//    CityListView()
-// }
+#Preview {
+    // CityListView()
+}
