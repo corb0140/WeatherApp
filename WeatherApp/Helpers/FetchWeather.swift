@@ -150,13 +150,11 @@ struct Data: Codable {
     let cities: [String]
 }
 
-struct CityResponseList: Identifiable {
-    let id: UUID
+struct CityResponseList: Codable {
     let msg: String
     let data: [Data]
 
     init(from response: CityResponse) {
-        self.id = UUID()
         self.msg = response.msg
         self.data = response.data
     }

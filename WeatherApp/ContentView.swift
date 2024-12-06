@@ -36,13 +36,6 @@ struct ContentView: View {
                         Label("Settings", systemImage: "gearshape")
                     }
                     .tag(2)
-
-                AboutView()
-                    .environmentObject(themeManager)
-                    .tabItem {
-                        Label("About", systemImage: "person.fill")
-                    }
-                    .tag(3)
             }
             .opacity(isCityWeatherDetailViewActive ? 0 : 1)
             .onAppear {

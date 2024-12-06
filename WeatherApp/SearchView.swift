@@ -12,7 +12,7 @@ struct SearchView: View {
     @EnvironmentObject var cityManager: CityManager
     @EnvironmentObject var cityRefreshListManager: CityRefreshListManager
 
-    @State var citiesList: [String] = []
+    @State var citiesList: [(id: UUID, name: String)] = []
     @State var city: String = ""
 
     @State private var showErrorMessage: Bool = false
@@ -20,11 +20,11 @@ struct SearchView: View {
 
     @Binding var selectedTab: Int
 
-    private var filteredCities: [String] {
+    private var filteredCities: [(id: UUID, name: String)] {
         if city.isEmpty {
             return citiesList
         } else {
-            return citiesList.filter { $0.localizedCaseInsensitiveContains(city) }
+            return citiesList.filter { $0.name.localizedCaseInsensitiveContains(city) }
         }
     }
 
@@ -34,11 +34,16 @@ struct SearchView: View {
 
             VStack(spacing: 15) {
                 VStack(alignment: .leading) {
+                    Text("Search City")
+                        .font(.montserrat(35, weight: .medium))
+                        .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
+                        .padding(.top, 85)
+
                     TextField(
                         "Enter a city name",
                         text: $city
                     )
-                    .padding(10)
+                    .padding(15)
                     .background(Color.white)
                     .foregroundStyle(Color.customColorDark)
                     .overlay(
@@ -48,17 +53,16 @@ struct SearchView: View {
                                 lineWidth: 2
                             )
                     )
-                    .padding(.top, 70)
                     .autocapitalization(.none)
                     .font(.montserrat(15, weight: .regular))
                 }
-                .frame(width: 350)
+                .frame(width: 370)
 
                 ScrollView {
                     LazyVStack {
-                        ForEach(filteredCities, id: \.self) { city in
+                        ForEach(filteredCities, id: \.id) { city in
                             HStack {
-                                Text(city)
+                                Text(city.name)
                                     .font(.montserrat(16, weight: .regular))
                                     .foregroundStyle(Color.white)
 
@@ -66,7 +70,7 @@ struct SearchView: View {
 
                                 Button {
                                     Task {
-                                        let results = try await OpenWeatherApiHTTPClient.asyncFetchWeatherData(for: city)
+                                        let results = try await OpenWeatherApiHTTPClient.asyncFetchWeatherData(for: city.name)
                                         switch results {
                                             case .success(let weatherData):
                                                 let newCity = City(
@@ -94,7 +98,7 @@ struct SearchView: View {
                                 }
                             }
                             .padding([.leading, .trailing], 20)
-                            .padding([.top, .bottom], 15)
+                            .padding([.top, .bottom], 18)
                             .frame(width: 370)
                             .background(themeManager.isDarkMode ? Color.black.opacity(0.8) : Color.gray.opacity(0.1))
                             .cornerRadius(5)
@@ -110,7 +114,7 @@ struct SearchView: View {
                 let results = try await CountryAndCityHTTPClient.asyncFetchCities()
                 switch results {
                     case .success(let cities):
-                        citiesList = cities.data.flatMap { $0.cities }
+                        citiesList = cities.data.flatMap { $0.cities.map { (id: UUID(), name: $0) } }
                     case .failure:
                         break
                 }

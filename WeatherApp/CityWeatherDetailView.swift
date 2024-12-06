@@ -27,6 +27,10 @@ struct CityWeatherDetailView: View {
 
     @State private var isCelsius: Bool = true
 
+
+
+    @State private var curretTime = Date()
+
     var body: some View {
         NavigationView {
             if let color = colorsMatch(from: Int(temp_C)) {
@@ -137,6 +141,8 @@ struct CityWeatherDetailView: View {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 20) {
                                     ForEach(hour, id: \.time) { hourData in
+                                        // if hourData.time == currentTime start array from that tim
+                                        // show only 6 hours afterwards
                                         VStack {
                                             Text("\(hourData.temp_c, specifier: "%.0f")°")
                                                 .foregroundStyle(Color.white)
@@ -181,6 +187,8 @@ struct CityWeatherDetailView: View {
                                 errorMessage = "Failed to fetch weather data: \(error.localizedDescription)"
                         }
                     }
+
+                    print(curretTime)
                 }
                 .navigationBarHidden(true)
 

@@ -22,7 +22,6 @@ struct CityListView: View {
     @State private var showRemoveCityActionSheet: Bool = false
     @Binding var isDetailActive: Bool
 
-
     var body: some View {
         ZStack(alignment: .topTrailing) {
             themeManager.isDarkMode ? Color.dark : Color.light
@@ -223,11 +222,11 @@ struct CityListView: View {
                         }
                         .padding(.top, 10)
                     }
-                    .frame(height: 80)
+                    .frame(height: 70)
                     .padding([.leading, .trailing], 20)
                     .padding([.top, .bottom], 10)
                     .background(themeManager.isDarkMode ? .light : Color.gray.opacity(0.1))
-                    .cornerRadius(20)
+                    .cornerRadius(10)
                     .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
                     .listRowSeparator(.hidden)
                     .onTapGesture {
