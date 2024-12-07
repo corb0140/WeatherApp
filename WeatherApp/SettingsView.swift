@@ -25,6 +25,13 @@ struct SettingsView: View {
             themeManager.isDarkMode ? Color.dark : Color.light
 
             VStack(spacing: 15) {
+                Text("Settings")
+                    .font(.montserrat(40, weight: .bold))
+                    .foregroundStyle(
+                        themeManager.isDarkMode ? .customColorDark : Color.customColorLight
+                    )
+                    .padding(.bottom, 60)
+
                 VStack {
                     Text("Switch Theme")
                         .font(.montserrat(18, weight: .bold))
@@ -84,7 +91,7 @@ struct SettingsView: View {
                         .background(Color.blue)
                         .cornerRadius(10)
                 }
-                .padding(.top, 20)
+                .padding(.top, 60)
             }
             .padding()
         }
