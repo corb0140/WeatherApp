@@ -104,14 +104,14 @@ struct SearchView: View {
                                     }
                                 } label: {
                                     Image(systemName: "plus.circle")
-                                        .foregroundStyle(Color.blue)
+                                        .foregroundStyle(themeManager.isDarkMode ? Color.white : Color.blue)
                                         .font(.system(size: 25))
                                 }
                             }
                             .padding([.leading, .trailing], 20)
                             .padding([.top, .bottom], 18)
                             .frame(width: 370)
-                            .background(themeManager.isDarkMode ? Color.black.opacity(0.5) : Color.gray.opacity(0.1))
+                            .background(themeManager.isDarkMode ? Color.blue : Color.gray.opacity(0.1))
                             .cornerRadius(5)
                         }
                         .background(themeManager.isDarkMode ? Color.dark : Color.light)

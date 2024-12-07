@@ -10,7 +10,8 @@ import SwiftUI
 struct CityListView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var cityManager: CityManager
-    @State private var showAddCitySheet: Bool = false
+    @EnvironmentObject var cityRefreshManager: CityRefreshManager
+
     @State private var cityId: Int = 0
     @State private var cityName: String = ""
     @State private var cityTemp: Double = 0.0
@@ -18,7 +19,7 @@ struct CityListView: View {
     @State private var cityDescription: String = ""
     @State private var latitude: Double = 0
     @State private var longitude: Double = 0
-    @State private var showRemoveCitiesActionSheet: Bool = false
+    @State private var showRemoveAllCitiesActionSheet: Bool = false
     @State private var showRemoveCityActionSheet: Bool = false
     @Binding var isDetailActive: Bool
 
@@ -29,21 +30,47 @@ struct CityListView: View {
                 HStack {
                     Spacer()
 
-                    VStack(alignment: .trailing) {
-                        HStack(spacing: 0) {
-                            Spacer()
+                    VStack {
+                        HStack {
+                            Button {
+                                showRemoveAllCitiesActionSheet = true
+                            } label: {
+                                Image(systemName: "minus.circle")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(Color.red)
+                            }
+                            .actionSheet(isPresented: $showRemoveAllCitiesActionSheet) { ActionSheet(
+                                title: Text("Delete all cities"),
+                                message: Text(
+                                    "Are you sure you want to delete all city"
+                                ),
+                                buttons: [
+                                    .destructive(Text("Delete")) {
+                                        cityIcon = ""
+                                        cityName = ""
 
-                            Text("World")
-                                .font(.montserrat(20, weight: .bold))
-                                .foregroundStyle(Color.blue)
-                                .textCase(.uppercase)
+                                        cityManager.removeAllCities()
+                                        cityRefreshManager.removeCities()
+                                    },
+                                    .cancel(Text("Cancel"))
+                                ]
+                            ) }
 
-                            Text("Weather App")
-                                .font(.montserrat(20, weight: .bold))
-                                .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
-                                .textCase(.uppercase)
+                            HStack(spacing: 0) {
+                                Spacer()
 
-                            Spacer()
+                                Text("World")
+                                    .font(.montserrat(20, weight: .bold))
+                                    .foregroundStyle(Color.blue)
+                                    .textCase(.uppercase)
+
+                                Text("Weather App")
+                                    .font(.montserrat(20, weight: .bold))
+                                    .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
+                                    .textCase(.uppercase)
+
+                                Spacer()
+                            }
                         }
                         .padding(.top, 30)
 
@@ -61,8 +88,9 @@ struct CityListView: View {
                                                 .symbolRenderingMode(.multicolor)
                                                 .background(
                                                     ZStack {
-                                                        Color.clear
+                                                        themeManager.isDarkMode ? Color.black.opacity(0.5)
                                                             .background(.ultraThinMaterial)
+                                                            .clipShape(Circle()) : Color.clear.background(.ultraThinMaterial)
                                                             .clipShape(Circle())
                                                     }
                                                     .blur(radius: 100)
@@ -172,7 +200,9 @@ struct CityListView: View {
                     VStack(spacing: 0) {
                         HStack {
                             Text(city.name)
-                                .foregroundStyle(Color.blue)
+                                .foregroundStyle(
+                                    themeManager.isDarkMode ? Color.customColorLight : Color.blue
+                                )
                                 .font(.montserrat(20, weight: .medium))
 
                             Spacer()
@@ -217,7 +247,7 @@ struct CityListView: View {
                     .frame(height: 70)
                     .padding([.leading, .trailing], 20)
                     .padding([.top, .bottom], 10)
-                    .background(themeManager.isDarkMode ? .light : Color.gray.opacity(0.1))
+                    .background(themeManager.isDarkMode ? Color.blue : Color.gray.opacity(0.1))
                     .cornerRadius(10)
                     .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
                     .listRowSeparator(.hidden)
