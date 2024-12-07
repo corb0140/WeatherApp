@@ -18,6 +18,11 @@ struct CityWeatherDetailView: View {
 
     @State private var errorMessage: String = ""
 
+    @State var slideLeft: CGFloat = 0
+    @State var slideRight: CGFloat = 100
+    @State var celciusOpacity: CGFloat = 1
+    @State var fahrenheitOpacity: CGFloat = 0
+
     @State var uvIndex: Double = 0.0
     @State var humidity: Double = 0.0
     @State var windSpeed: Double = 0.0
@@ -52,12 +57,35 @@ struct CityWeatherDetailView: View {
                                 .foregroundStyle(.white)
                                 .font(.montserrat(55, weight: .bold))
 
-                            Text("\(String(format: "%.0f", isCelsius ? temp_C : temp_F))°\(isCelsius ? "C" : "F")")
-                                .foregroundStyle(Color.white)
-                                .font(.montserrat(60, weight: .bold))
-                                .onTapGesture {
-                                    isCelsius.toggle()
-                                }
+                            ZStack {
+                                Text("\(String(format: "%.0f", temp_C))ºC")
+                                    .foregroundStyle(Color.white)
+                                    .font(.montserrat(60, weight: .bold))
+                                    .offset(x: slideLeft)
+                                    .opacity(celciusOpacity)
+                                    .animation(.easeInOut(duration: 0.4), value: slideLeft)
+                                    .onTapGesture {
+                                        isCelsius.toggle()
+                                        slideLeft = -100
+                                        slideRight = 0
+                                        fahrenheitOpacity = 1
+                                        celciusOpacity = 0
+                                    }
+
+                                Text("\(String(format: "%.0f", temp_F))ºF")
+                                    .foregroundStyle(Color.white)
+                                    .font(.montserrat(60, weight: .bold))
+                                    .offset(x: slideRight)
+                                    .opacity(fahrenheitOpacity)
+                                    .animation(.easeInOut(duration: 0.4), value: slideRight)
+                                    .onTapGesture {
+                                        isCelsius.toggle()
+                                        slideLeft = 0
+                                        slideRight = 100
+                                        fahrenheitOpacity = 0
+                                        celciusOpacity = 1
+                                    }
+                            }
 
                             Text(description)
                                 .foregroundStyle(Color.white)

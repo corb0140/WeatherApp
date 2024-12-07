@@ -10,6 +10,8 @@ import SwiftUI
 struct AboutView: View {
     @EnvironmentObject var themeManager: ThemeManager
 
+    @State var jump: CGFloat = 0
+
     var body: some View {
         ZStack(alignment: .top) {
             themeManager.isDarkMode ? Color.dark : Color.light
@@ -27,18 +29,43 @@ struct AboutView: View {
                     Circle()
                         .fill(Color.blue)
                         .frame(width: 10, height: 10)
+                        .offset(y: jump)
+                        .animation(
+                            .easeInOut(duration: 0.5).repeatForever(),
+                            value: jump
+                        )
                     Circle()
                         .fill(Color.green)
                         .frame(width: 10, height: 10)
+                        .offset(y: jump)
+                        .animation(
+                            .easeInOut(duration: 0.5).repeatForever().delay(0.3),
+                            value: jump
+                        )
                     Circle()
                         .fill(Color.yellow)
                         .frame(width: 10, height: 10)
+                        .offset(y: jump)
+                        .animation(
+                            .easeInOut(duration: 0.5).repeatForever().delay(0.5),
+                            value: jump
+                        )
                     Circle()
                         .fill(Color.red)
                         .frame(width: 10, height: 10)
+                        .offset(y: jump)
+                        .animation(
+                            .easeInOut(duration: 0.5).repeatForever().delay(0.7),
+                            value: jump
+                        )
                     Circle()
                         .fill(Color.pink)
                         .frame(width: 10, height: 10)
+                        .offset(y: jump)
+                        .animation(
+                            .easeInOut(duration: 0.5).repeatForever().delay(0.9),
+                            value: jump
+                        )
                 }
 
                 VStack {
@@ -78,6 +105,9 @@ struct AboutView: View {
             .padding(.top, 120)
             .padding([.leading, .trailing], 20)
             .foregroundStyle(.customColorLight)
+            .onAppear {
+                jump = -10
+            }
         }
         .ignoresSafeArea()
     }
