@@ -140,7 +140,6 @@ enum WeatherApiHTTPClient {
 }
 
 // countries & cities
-
 struct CityResponse: Codable {
     let data: [Data]
     let msg: String

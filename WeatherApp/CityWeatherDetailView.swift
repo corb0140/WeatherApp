@@ -161,12 +161,9 @@ struct CityWeatherDetailView: View {
                                 .foregroundStyle(Color.white)
                                 .padding(.leading, 25)
 
-                            // future reference - fix so it shows current hourly and next 6 hours
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 20) {
                                     ForEach(hour, id: \.time) { hourData in
-                                        // if hourData.time == currentTime start array from that tim
-                                        // show only 6 hours afterwards
                                         VStack {
                                             Text("\(hourData.temp_c, specifier: "%.0f")°")
                                                 .foregroundStyle(Color.white)
