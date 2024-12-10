@@ -31,34 +31,8 @@ struct CityListView: View {
                     Spacer()
 
                     VStack {
-                        HStack {
-                            Button {
-                                showRemoveAllCitiesActionSheet = true
-                            } label: {
-                                Image(systemName: "minus.circle")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(Color.red)
-                            }
-                            .actionSheet(isPresented: $showRemoveAllCitiesActionSheet) { ActionSheet(
-                                title: Text("Delete all cities"),
-                                message: Text(
-                                    "Are you sure you want to delete all city"
-                                ),
-                                buttons: [
-                                    .destructive(Text("Delete")) {
-                                        cityIcon = ""
-                                        cityName = ""
-
-                                        cityManager.removeAllCities()
-                                        cityRefreshManager.removeCities()
-                                    },
-                                    .cancel(Text("Cancel"))
-                                ]
-                            ) }
-
+                        VStack {
                             HStack(spacing: 0) {
-                                Spacer()
-
                                 Text("World")
                                     .font(.montserrat(20, weight: .bold))
                                     .foregroundStyle(Color.blue)
@@ -68,8 +42,44 @@ struct CityListView: View {
                                     .font(.montserrat(20, weight: .bold))
                                     .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
                                     .textCase(.uppercase)
+                            }
 
-                                Spacer()
+                            if !cityManager.cities.isEmpty {
+                                Button {
+                                    showRemoveAllCitiesActionSheet = true
+                                } label: {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: "minus.circle")
+                                            .font(.system(size: 15))
+                                            .foregroundColor(Color.red)
+
+                                        Text("Delete all cities")
+                                            .font(.montserrat(15, weight: .medium))
+                                            .foregroundStyle(Color.red)
+                                    }
+                                    .padding(8)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.red, lineWidth: 2)
+                                    )
+                                }
+                                .padding(.top, 10)
+                                .actionSheet(isPresented: $showRemoveAllCitiesActionSheet) { ActionSheet(
+                                    title: Text("Delete all cities"),
+                                    message: Text(
+                                        "Are you sure you want to delete all city"
+                                    ),
+                                    buttons: [
+                                        .destructive(Text("Delete")) {
+                                            cityIcon = ""
+                                            cityName = ""
+
+                                            cityManager.removeAllCities()
+                                            cityRefreshManager.removeCities()
+                                        },
+                                        .cancel(Text("Cancel"))
+                                    ]
+                                ) }
                             }
                         }
                         .padding(.top, 30)
@@ -182,8 +192,8 @@ struct CityListView: View {
                             VStack(alignment: .center) {
                                 Spacer()
 
-                                Text("Add a city to get started")
-                                    .font(.montserrat(20, weight: .bold))
+                                Text("Search for a city to get started")
+                                    .font(.montserrat(18, weight: .bold))
                                     .foregroundStyle(Color.blue)
                                     .textCase(.uppercase)
 

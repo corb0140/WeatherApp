@@ -41,7 +41,9 @@ class CityManager: ObservableObject {
     @Published var cities: [City] = []
 
     func addCity(_ city: City) {
-        cities.append(city)
+        if !cities.contains(where: { $0.name.caseInsensitiveCompare(city.name) == .orderedSame }) {
+            cities.append(city)
+        }
     }
 
     func removeCity(byID id: Int) {

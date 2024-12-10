@@ -11,6 +11,10 @@ struct AboutView: View {
     @EnvironmentObject var themeManager: ThemeManager
 
     @State var jump: CGFloat = 0
+    @State private var tap: Int = 0
+
+    @State private var countdownTimer = 30
+    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -90,6 +94,27 @@ struct AboutView: View {
                     Text("Made by Mark Corbin. An aspiring Swift developer @ Algonquin College.")
                         .font(.montserrat(15, weight: .regular))
                         .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
+                }
+
+                Button {
+                    tap += 1
+                } label: {
+                    VStack(spacing: 5) {
+                        if tap < 3 {
+                            Image("mark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 200, height: 150)
+                                .padding()
+                        } else {
+                            Image("babyMark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 200, height: 150)
+                                .padding()
+                        }
+                    }
+                    .padding(.top, 5)
                 }
 
                 Link(destination: URL(string: "https://portfolio-ruby-nine-59.vercel.app/")!) {
