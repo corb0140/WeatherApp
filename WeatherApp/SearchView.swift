@@ -20,6 +20,7 @@ struct SearchView: View {
 
     @Binding var selectedTab: Int
 
+    // Filter City As You type
     private var filteredCities: [(id: UUID, name: String)] {
         if city.isEmpty {
             return citiesList
@@ -32,6 +33,7 @@ struct SearchView: View {
         ZStack {
             themeManager.isDarkMode ? Color.dark : Color.light
 
+            // Search View VStack
             VStack(spacing: 15) {
                 VStack(alignment: .leading) {
                     Text("Search City")
@@ -39,6 +41,7 @@ struct SearchView: View {
                         .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
                         .padding(.top, 85)
 
+                    // TextField To Search City
                     TextField(
                         "Enter a city name",
                         text: $city
@@ -58,8 +61,10 @@ struct SearchView: View {
                 }
                 .frame(width: 370)
 
+                // Scroll View
                 ScrollView {
                     LazyVStack {
+                        // Loop Through Filtered List
                         ForEach(filteredCities, id: \.id) { city in
                             HStack {
                                 Text(city.name)
@@ -68,6 +73,7 @@ struct SearchView: View {
 
                                 Spacer()
 
+                                // Button To Add City To cityManager Array. Also Add City Name to CityFreshManager Array
                                 Button {
                                     Task {
                                         let results = try await OpenWeatherApiHTTPClient.asyncFetchWeatherData(for: city.name)
@@ -85,6 +91,8 @@ struct SearchView: View {
                                                 )
 
                                                 cityManager.addCity(newCity)
+
+                                                // Go Back To Home By Setting selectedTaB To 0
                                                 selectedTab = 0
 
                                                 let city = CityName(
@@ -121,6 +129,7 @@ struct SearchView: View {
         }
         .ignoresSafeArea()
         .onAppear {
+            // Get List Of Cities From Country And City Api And Pass To citiesList Array
             Task {
                 let results = try await CountryAndCityHTTPClient.asyncFetchCities()
                 switch results {

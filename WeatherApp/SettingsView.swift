@@ -24,7 +24,9 @@ struct SettingsView: View {
         ZStack {
             themeManager.isDarkMode ? Color.dark : Color.light
 
+            // Setting VStack
             VStack(spacing: 15) {
+                // Title
                 Text("Settings")
                     .font(.montserrat(40, weight: .bold))
                     .foregroundStyle(
@@ -32,6 +34,7 @@ struct SettingsView: View {
                     )
                     .padding(.bottom, 60)
 
+                // Switch Theme. Functionality In ThemeManager
                 VStack {
                     Text("Switch Theme")
                         .font(.montserrat(18, weight: .bold))
@@ -48,6 +51,7 @@ struct SettingsView: View {
                         }
                 }
 
+                // Refresh Interval
                 VStack(spacing: 10) {
                     Text("Refresh Interval")
                         .font(.montserrat(18, weight: .bold))
@@ -59,6 +63,7 @@ struct SettingsView: View {
 
                     HStack(spacing: 15) {
                         ForEach(intervals, id: \.self) { interval in
+                            // Button To Pass Clicked Interval To updatedRefreshInterval Function
                             Button(action: {
                                 updateRefreshInterval(interval)
                             }) {
@@ -82,6 +87,7 @@ struct SettingsView: View {
                 }
                 .padding(.top, 30)
 
+                // Link To About Page
                 NavigationLink(destination: AboutView()) {
                     Text("About")
                         .foregroundStyle(Color.customColorLight)
@@ -101,11 +107,13 @@ struct SettingsView: View {
         })
     }
 
+    // Function For Passing Interval To AppStorage. Timer Now Switches To AppStorage Time
     private func updateRefreshInterval(_ interval: Double) {
         refreshInterval = interval
         timer = Timer.publish(every: refreshInterval, on: .main, in: .common).autoconnect()
     }
 
+    // Function for Removing Cities In List and Adding Them Back (Pased Function in onRecieve To Update City Data)
     private func refreshCities() {
         cityManager.removeAllCities()
 

@@ -14,10 +14,12 @@ struct ContentView: View {
     @State private var selectedTab: Int = 0
 
     var body: some View {
+        // Navigation Stack On Whole View
         NavigationStack {
             ZStack {
                 themeManager.isDarkMode ? Color.black : Color.white
 
+                // TabView
                 TabView(selection: $selectedTab) {
                     CityListView(isDetailActive: $isCityWeatherDetailViewActive)
                         .environmentObject(themeManager)
@@ -50,10 +52,11 @@ struct ContentView: View {
         .ignoresSafeArea()
     }
 
+    // Function To Change TabView Appearance
     func updateTabBarAppearance() {
         @State var appearance = UITabBarAppearance()
         appearance.backgroundColor = UIColor.customColorDark
-        appearance.stackedLayoutAppearance.normal.iconColor =  UIColor.customColorLight
+        appearance.stackedLayoutAppearance.normal.iconColor = UIColor.customColorLight
         appearance.stackedLayoutAppearance.selected.iconColor = .blue
 
         UITabBar.appearance().standardAppearance = appearance

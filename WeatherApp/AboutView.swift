@@ -13,13 +13,11 @@ struct AboutView: View {
     @State var jump: CGFloat = 0
     @State private var tap: Int = 0
 
-    @State private var countdownTimer = 30
-    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
     var body: some View {
         ZStack(alignment: .top) {
             themeManager.isDarkMode ? Color.dark : Color.light
 
+            // App Name
             VStack(alignment: .center, spacing: 35) {
                 HStack(spacing: 0) {
                     Text("world")
@@ -29,6 +27,7 @@ struct AboutView: View {
                 }
                 .font(.montserrat(35, weight: .bold))
 
+                // Animation Of Balls Moving Like A Snake
                 HStack(spacing: 4) {
                     Circle()
                         .fill(Color.blue)
@@ -72,6 +71,7 @@ struct AboutView: View {
                         )
                 }
 
+                // Welcome Message
                 VStack {
                     HStack {
                         Text("Hey,")
@@ -86,6 +86,7 @@ struct AboutView: View {
                 .foregroundStyle(Color.customColorLight)
                 .font(.montserrat(35, weight: .bold))
 
+                // Description Of App
                 VStack(alignment: .leading, spacing: 25) {
                     Text("This is a city weather app, where you can see weather forecast for any city in the world. Get humidity, uv index, temperature, forcast by the hour and more!")
                         .font(.montserrat(15, weight: .regular))
@@ -96,6 +97,7 @@ struct AboutView: View {
                         .foregroundStyle(themeManager.isDarkMode ? Color.light : Color.dark)
                 }
 
+                // Clickable Image. Switch Image After 3 Clicks
                 Button {
                     tap += 1
                 } label: {
@@ -117,6 +119,7 @@ struct AboutView: View {
                     .padding(.top, 5)
                 }
 
+                // Link To Portfolio
                 Link(destination: URL(string: "https://portfolio-ruby-nine-59.vercel.app/")!) {
                     HStack {
                         Text("Check out my portfolio")

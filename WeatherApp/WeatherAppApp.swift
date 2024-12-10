@@ -19,7 +19,6 @@ struct WeatherAppApp: App {
                 .environmentObject(themeManager)
                 .environmentObject(cityManager)
                 .environmentObject(cityRefreshManager)
-//                .modelContainer(for: City.self)
         }
     }
 }

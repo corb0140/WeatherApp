@@ -12,6 +12,7 @@ struct CityListView: View {
     @EnvironmentObject var cityManager: CityManager
     @EnvironmentObject var cityRefreshManager: CityRefreshManager
 
+    // Values To Store Data Gained From Fetching OpenWeatherApi
     @State private var cityId: Int = 0
     @State private var cityName: String = ""
     @State private var cityTemp: Double = 0.0
@@ -21,16 +22,21 @@ struct CityListView: View {
     @State private var longitude: Double = 0
     @State private var showRemoveAllCitiesActionSheet: Bool = false
     @State private var showRemoveCityActionSheet: Bool = false
+
     @Binding var isDetailActive: Bool
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
             themeManager.isDarkMode ? Color.dark : Color.light
+
+            // View VStack
             VStack(spacing: 0) {
                 HStack {
                     Spacer()
 
+                    // App Name, Current City, Delete and View More Buttons VStack
                     VStack {
+                        // App Name, Current City Delete All Cities
                         VStack {
                             HStack(spacing: 0) {
                                 Text("World")
@@ -45,6 +51,7 @@ struct CityListView: View {
                             }
 
                             if !cityManager.cities.isEmpty {
+                                // Delete All Cities Button
                                 Button {
                                     showRemoveAllCitiesActionSheet = true
                                 } label: {
@@ -84,11 +91,14 @@ struct CityListView: View {
                         }
                         .padding(.top, 30)
 
+                        // Current Weather Icon For City, View More Button, Delete City
+                        // Show Stack Only When City Collection Isn't Empty. Else Show Message To Search For City
                         if !cityManager.cities.isEmpty {
                             HStack(alignment: .center) {
                                 Spacer()
 
                                 VStack(alignment: .center) {
+                                    // Weather Symbol For Current City. Shows Symbol When Api Icon Data Matches Name in SymbolsMatch
                                     if let weatherSymbol = symbolsMatch(from: cityIcon) {
                                         HStack {
                                             Spacer()
@@ -109,6 +119,7 @@ struct CityListView: View {
 
                                             Spacer()
 
+                                            // Delete This City Button
                                             Button {
                                                 showRemoveCityActionSheet = true
                                             } label: {
@@ -142,6 +153,7 @@ struct CityListView: View {
                                             .foregroundStyle(Color.white)
                                     }
 
+                                    // City Name
                                     if !cityName.isEmpty {
                                         Text(cityName)
                                             .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
@@ -149,6 +161,7 @@ struct CityListView: View {
                                             .padding(.top, 5)
                                     }
 
+                                    // Navigate To CityDetailsView
                                     if !cityName.isEmpty {
                                         NavigationLink(
                                             destination: CityWeatherDetailView(
@@ -205,6 +218,7 @@ struct CityListView: View {
                 }
                 .background(themeManager.isDarkMode ? Color.dark : Color.light)
 
+                // List Of Cities Saved In cityManager ObservableObject
                 List(cityManager.cities) {
                     city in
                     VStack(spacing: 0) {
@@ -224,6 +238,7 @@ struct CityListView: View {
                         .padding(.bottom, 5)
 
                         HStack {
+                            // Weather Symbol For Current City. Shows Symbol When Api Icon Data Matches Name in SymbolsMatch
                             if let weatherSymbol = symbolsMatch(from: city.icon) {
                                 Image(systemName: weatherSymbol.rawValue)
                                     .font(.system(size: 20))
@@ -262,6 +277,7 @@ struct CityListView: View {
                     .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
                     .listRowSeparator(.hidden)
                     .onTapGesture {
+                        // Pass Fetch Data To State Variables
                         cityId = city.id
                         cityName = city.name
                         cityDescription = city.cityDescription

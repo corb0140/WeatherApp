@@ -36,8 +36,10 @@ struct CityWeatherDetailView: View {
         NavigationView {
             if let color = colorsMatch(from: Int(temp_C)) {
                 ZStack(alignment: .top) {
+                    // Map View. Takes Lat And Lon From Latitude and Longitude Variables
                     MapView(latitude: latitude, longitude: longitude)
 
+                    // Background Transparent View
                     VStack {}
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(
@@ -51,6 +53,7 @@ struct CityWeatherDetailView: View {
                             )
                         )
 
+                    // City Name, Temperature And Current Weather
                     VStack(spacing: 50) {
                         VStack {
                             Text(cityName)
@@ -93,6 +96,7 @@ struct CityWeatherDetailView: View {
                         }
                         .padding(.top, 20)
 
+                        // UV Index, Wind and Humidity
                         HStack {
                             VStack(alignment: .center, spacing: 10) {
                                 HStack(spacing: 5) {
@@ -155,6 +159,7 @@ struct CityWeatherDetailView: View {
 
                         Spacer()
 
+                        // Hourly Weather Report For The Day
                         VStack(alignment: .leading, spacing: 20) {
                             Text("Today")
                                 .font(.montserrat(18, weight: .bold))
@@ -163,6 +168,7 @@ struct CityWeatherDetailView: View {
 
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 20) {
+                                    // Loop Through Hour Array Which Holds Hourly Weather Fetch Data From Weather Api
                                     ForEach(hour, id: \.time) { hourData in
                                         VStack {
                                             Text("\(hourData.temp_c, specifier: "%.0f")°")
@@ -194,6 +200,7 @@ struct CityWeatherDetailView: View {
                 }
                 .onAppear {
                     Task {
+                        // Fetch Data from weatherApi And Pass It To Variables
                         let results = try await WeatherApiHTTPClient.asyncFetchWeatherDayData(for: cityName)
                         switch results {
                             case .success(let weatherDayData):
