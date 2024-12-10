@@ -92,7 +92,7 @@ struct CityListView: View {
                         .padding(.top, 30)
 
                         // Current Weather Icon For City, View More Button, Delete City
-                        // Show Stack Only When City Collection Isn't Empty. Else Show Message To Search For City
+                        // Show Stack Only When City Array Isn't Empty. Else Show Message To Search For City
                         if !cityManager.cities.isEmpty {
                             HStack(alignment: .center) {
                                 Spacer()
@@ -219,71 +219,76 @@ struct CityListView: View {
                 .background(themeManager.isDarkMode ? Color.dark : Color.light)
 
                 // List Of Cities Saved In cityManager ObservableObject
-                List(cityManager.cities) {
-                    city in
-                    VStack(spacing: 0) {
-                        HStack {
-                            Text(city.name)
-                                .foregroundStyle(
-                                    themeManager.isDarkMode ? Color.customColorLight : Color.blue
-                                )
-                                .font(.montserrat(20, weight: .medium))
-
-                            Spacer()
-
-                            Text(city.formattedTime)
-                                .foregroundStyle(Color.white)
-                                .font(.montserrat(18, weight: .regular))
-                        }
-                        .padding(.bottom, 5)
-
-                        HStack {
-                            // Weather Symbol For Current City. Shows Symbol When Api Icon Data Matches Name in SymbolsMatch
-                            if let weatherSymbol = symbolsMatch(from: city.icon) {
-                                Image(systemName: weatherSymbol.rawValue)
-                                    .font(.system(size: 20))
-                                    .symbolRenderingMode(.multicolor)
-                                    .background(
-                                        ZStack {
-                                            Color.clear
-                                                .background(.ultraThinMaterial)
-                                                .clipShape(Circle())
-                                        }
-                                        .blur(radius: 60)
+                List {
+                    ForEach(cityManager.cities) { city in
+                        VStack(spacing: 0) {
+                            HStack {
+                                Text(city.name)
+                                    .foregroundStyle(
+                                        themeManager.isDarkMode ? Color.customColorLight : Color.blue
                                     )
-                            } else {
-                                Text("No Icon Found")
+                                    .font(.montserrat(20, weight: .medium))
+
+                                Spacer()
+
+                                Text(city.formattedTime)
+                                    .foregroundStyle(Color.white)
+                                    .font(.montserrat(18, weight: .regular))
                             }
+                            .padding(.bottom, 5)
 
-                            Spacer()
+                            HStack {
+                                // Weather Symbol For Current City. Shows Symbol When Api Icon Data Matches Name in SymbolsMatch
+                                if let weatherSymbol = symbolsMatch(from: city.icon) {
+                                    Image(systemName: weatherSymbol.rawValue)
+                                        .font(.system(size: 20))
+                                        .symbolRenderingMode(.multicolor)
+                                        .background(
+                                            ZStack {
+                                                Color.clear
+                                                    .background(.ultraThinMaterial)
+                                                    .clipShape(Circle())
+                                            }
+                                            .blur(radius: 60)
+                                        )
+                                } else {
+                                    Text("No Icon Found")
+                                }
 
-                            Text(city.cityDescription)
-                                .foregroundStyle(Color.white)
-                                .font(.montserrat(20, weight: .medium))
+                                Spacer()
 
-                            Spacer()
+                                Text(city.cityDescription)
+                                    .foregroundStyle(Color.white)
+                                    .font(.montserrat(20, weight: .medium))
 
-                            Text("\(String(format: "%.0f", city.temperature))°C")
-                                .foregroundStyle(Color.white)
-                                .font(.montserrat(18, weight: .medium))
+                                Spacer()
+
+                                Text("\(String(format: "%.0f", city.temperature))°C")
+                                    .foregroundStyle(Color.white)
+                                    .font(.montserrat(18, weight: .medium))
+                            }
+                            .padding(.top, 10)
                         }
-                        .padding(.top, 10)
+                        .frame(height: 70)
+                        .padding([.leading, .trailing], 20)
+                        .padding([.top, .bottom], 10)
+                        .background(themeManager.isDarkMode ? Color.blue : Color.gray.opacity(0.1))
+                        .cornerRadius(10)
+                        .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
+                        .listRowSeparator(.hidden)
+                        .onTapGesture {
+                            // Pass Fetch Data To State Variables
+                            cityId = city.id
+                            cityName = city.name
+                            cityDescription = city.cityDescription
+                            cityIcon = city.icon
+                            latitude = city.latitude
+                            longitude = city.longitude
+                        }
                     }
-                    .frame(height: 70)
-                    .padding([.leading, .trailing], 20)
-                    .padding([.top, .bottom], 10)
-                    .background(themeManager.isDarkMode ? Color.blue : Color.gray.opacity(0.1))
-                    .cornerRadius(10)
-                    .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
-                    .listRowSeparator(.hidden)
-                    .onTapGesture {
-                        // Pass Fetch Data To State Variables
-                        cityId = city.id
-                        cityName = city.name
-                        cityDescription = city.cityDescription
-                        cityIcon = city.icon
-                        latitude = city.latitude
-                        longitude = city.longitude
+                    .onMove { indices, newOffset in
+                        // Reorder The Cities List By Dragging And Dropping
+                        cityManager.cities.move(fromOffsets: indices, toOffset: newOffset)
                     }
                 }
                 .scrollContentBackground(.hidden)
