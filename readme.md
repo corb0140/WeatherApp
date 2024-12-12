@@ -10,3 +10,4 @@
 - Click button on about page sending to portfolio
 - Added animations to about, settings and detail view(switch from Cº to Fº)
 - Prevent app from adding same city to list
+- Draggable list of cities
