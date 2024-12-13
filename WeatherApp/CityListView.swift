@@ -248,7 +248,7 @@ struct CityListView: View {
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 cityManager.removeCity(byID: city.id)
-
+                                cityRefreshManager.removeCity(byName: city.name)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
