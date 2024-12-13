@@ -98,26 +98,14 @@ struct AboutView: View {
                 }
 
                 // Clickable Image. Switch Image After 3 Clicks
-                Button {
-                    tap += 1
-                } label: {
-                    VStack(spacing: 5) {
-                        if tap < 3 {
-                            Image("mark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 200, height: 150)
-                                .padding()
-                        } else {
-                            Image("babyMark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 200, height: 150)
-                                .padding()
-                        }
+                Image(tap >= 3 ? "babyMark" : "mark")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 150)
+                    .padding()
+                    .onTapGesture {
+                        tap = (tap + 1) % 4
                     }
-                    .padding(.top, 5)
-                }
 
                 // Link To Portfolio
                 Link(destination: URL(string: "https://portfolio-ruby-nine-59.vercel.app/")!) {
