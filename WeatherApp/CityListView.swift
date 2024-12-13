@@ -39,6 +39,34 @@ struct CityListView: View {
                         // App Name, Current City Delete All Cities
                         VStack {
                             HStack(spacing: 0) {
+                                if !cityManager.cities.isEmpty {
+                                    // Delete All Cities Button
+                                    Button {
+                                        showRemoveAllCitiesActionSheet = true
+                                    } label: {
+                                        Image(systemName: "minus.circle")
+                                            .font(.system(size: 15))
+                                            .foregroundColor(Color.red)
+                                    }
+                                    .padding(.trailing, 10)
+                                    .actionSheet(isPresented: $showRemoveAllCitiesActionSheet) { ActionSheet(
+                                        title: Text("Delete all cities"),
+                                        message: Text(
+                                            "Are you sure you want to delete all city"
+                                        ),
+                                        buttons: [
+                                            .destructive(Text("Delete")) {
+                                                cityIcon = ""
+                                                cityName = ""
+
+                                                cityManager.removeAllCities()
+                                                cityRefreshManager.removeCities()
+                                            },
+                                            .cancel(Text("Cancel"))
+                                        ]
+                                    ) }
+                                }
+
                                 Text("World")
                                     .font(.montserrat(20, weight: .bold))
                                     .foregroundStyle(Color.blue)
@@ -48,45 +76,6 @@ struct CityListView: View {
                                     .font(.montserrat(20, weight: .bold))
                                     .foregroundStyle(themeManager.isDarkMode ? .light : .dark)
                                     .textCase(.uppercase)
-                            }
-
-                            if !cityManager.cities.isEmpty {
-                                // Delete All Cities Button
-                                Button {
-                                    showRemoveAllCitiesActionSheet = true
-                                } label: {
-                                    HStack(spacing: 10) {
-                                        Image(systemName: "minus.circle")
-                                            .font(.system(size: 15))
-                                            .foregroundColor(Color.red)
-
-                                        Text("Delete all cities")
-                                            .font(.montserrat(15, weight: .medium))
-                                            .foregroundStyle(Color.red)
-                                    }
-                                    .padding(8)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color.red, lineWidth: 2)
-                                    )
-                                }
-                                .padding(.top, 10)
-                                .actionSheet(isPresented: $showRemoveAllCitiesActionSheet) { ActionSheet(
-                                    title: Text("Delete all cities"),
-                                    message: Text(
-                                        "Are you sure you want to delete all city"
-                                    ),
-                                    buttons: [
-                                        .destructive(Text("Delete")) {
-                                            cityIcon = ""
-                                            cityName = ""
-
-                                            cityManager.removeAllCities()
-                                            cityRefreshManager.removeCities()
-                                        },
-                                        .cancel(Text("Cancel"))
-                                    ]
-                                ) }
                             }
                         }
                         .padding(.top, 30)
@@ -246,7 +235,6 @@ struct CityListView: View {
                         .background(themeManager.isDarkMode ? Color.blue : Color.gray.opacity(0.1))
                         .cornerRadius(5)
                         .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
-                        .listRowSeparator(.hidden)
                         .onTapGesture {
                             // Pass Fetch Data To State Variables
                             cityId = city.id
@@ -256,7 +244,7 @@ struct CityListView: View {
                             latitude = city.latitude
                             longitude = city.longitude
                         }
-                        .swipeActions(edge: .trailing) {
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 cityManager.removeCity(byID: city.id)
 
@@ -270,7 +258,6 @@ struct CityListView: View {
                         cityManager.cities.move(fromOffsets: indices, toOffset: newOffset)
                     }
                 }
-                .scrollContentBackground(.hidden)
                 .listStyle(.plain)
                 .background(themeManager.isDarkMode ? Color.dark : Color.light)
             }
