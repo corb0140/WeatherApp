@@ -150,7 +150,7 @@ struct CityListView: View {
                                         }
                                     } else {
                                         VStack {
-                                            Text("Please click on a city ")
+                                            Text("Please click on a city name")
                                                 .padding(12)
                                                 .foregroundStyle(Color.blue)
                                                 .font(.montserrat(16, weight: .medium))
@@ -188,6 +188,15 @@ struct CityListView: View {
                                         themeManager.isDarkMode ? Color.customColorLight : Color.blue
                                     )
                                     .font(.montserrat(30, weight: .medium))
+                                    .onTapGesture {
+                                        // Pass Fetch Data To State Variables
+                                        cityId = city.id
+                                        cityName = city.name
+                                        cityDescription = city.cityDescription
+                                        cityIcon = city.icon
+                                        latitude = city.latitude
+                                        longitude = city.longitude
+                                    }
 
                                 Spacer()
 
@@ -236,17 +245,11 @@ struct CityListView: View {
                                 .opacity(0.1)
                         )
                         .listRowSeparator(.hidden)
-                        .onTapGesture {
-                            // Pass Fetch Data To State Variables
-                            cityId = city.id
-                            cityName = city.name
-                            cityDescription = city.cityDescription
-                            cityIcon = city.icon
-                            latitude = city.latitude
-                            longitude = city.longitude
-                        }
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
+                                cityIcon = ""
+                                cityName = ""
+
                                 cityManager.removeCity(byID: city.id)
                                 cityRefreshManager.removeCity(byName: city.name)
                             } label: {
