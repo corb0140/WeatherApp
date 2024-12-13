@@ -181,7 +181,7 @@ struct CityListView: View {
                 // List Of Cities Saved In cityManager ObservableObject
                 List {
                     ForEach(cityManager.cities) { city in
-                        VStack(spacing: 0) {
+                        VStack(spacing: 10) {
                             HStack {
                                 Text(city.name)
                                     .foregroundStyle(
@@ -230,11 +230,12 @@ struct CityListView: View {
                             .padding(.top, 10)
                         }
                         .frame(height: 100)
-                        .padding([.leading, .trailing], 20)
-                        .padding([.top, .bottom], 10)
-                        .background(themeManager.isDarkMode ? Color.blue : Color.gray.opacity(0.1))
                         .cornerRadius(5)
-                        .listRowBackground(themeManager.isDarkMode ? Color.dark : Color.light)
+                        .listRowBackground(
+                            themeManager.isDarkMode ? Color.blue : Color.gray
+                                .opacity(0.1)
+                        )
+                        .listRowSeparator(.hidden)
                         .onTapGesture {
                             // Pass Fetch Data To State Variables
                             cityId = city.id
@@ -259,7 +260,8 @@ struct CityListView: View {
                     }
                 }
                 .listStyle(.plain)
-                .background(themeManager.isDarkMode ? Color.dark : Color.light)
+                .listRowSpacing(10)
+                .padding(5)
             }
         }
     }
