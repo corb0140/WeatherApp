@@ -4,7 +4,7 @@
 # Additional features
 
 - Changed font text to montserrat
-- Switch theme of app. located in settings
+- Switch theme of app, located in settings. 
 - Used and show SF Symbols by matching openweatherapi icon data using enum and switch
 - Delete all cities from list
 - Click button on about page sending to portfolio

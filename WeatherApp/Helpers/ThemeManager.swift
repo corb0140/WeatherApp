@@ -12,13 +12,6 @@ class ThemeManager: ObservableObject {
 
     init(isDarkMode: Bool = false) {
         self.isDarkMode = isDarkMode
-        setDarkMode(isDarkMode)
-    }
-
-    func setDarkMode(_ isDarkMode: Bool) {
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-            windowScene.windows.first?.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
-        }
     }
 
     struct CustomToggleStyle: ToggleStyle {

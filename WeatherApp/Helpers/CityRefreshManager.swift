@@ -30,4 +30,8 @@ class CityRefreshManager: ObservableObject {
     func removeCities() {
         citiesRefreshList.removeAll()
     }
+
+    func removeCity(byName cityName: CityName) {
+        citiesRefreshList.removeAll(where: { $0.name.caseInsensitiveCompare(cityName.name) == .orderedSame })
+    }
 }
