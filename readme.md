@@ -3,12 +3,22 @@
 
 # Additional features
 
-- Changed font text to montserrat
-- Switch theme of app, located in settings. 
-- Used and show SF Symbols by matching openweatherapi icon data using enum and switch
-- Delete all cities from list button
-- Click button on about page sending to portfolio
-- Added animations to about, settings and detail view(switch from Cº to Fº)
-- Prevent app from adding same city to list
-- Draggable list of cities
-- Swipe to delete.
+City Search: Search for any city using the CountriesNow API
+ to populate the city list.
+
+Weather Data Retrieval: Fetch hourly weather data using both OpenWeather API
+ and WeatherAPI
+
+Dynamic Colors: UI elements change color based on humidity levels to visually represent weather conditions.
+
+Custom Weather Symbols: Unique icons dynamically update based on weather conditions from OpenWeather API.
+
+Persistent Settings: Uses @AppStorage to persist user preferences, such as refreshInterval for weather updates.
+
+Animations: Custom animations triggered via onTapGesture and SwiftUI animation modifiers.
+
+Map Integration: Display selected cities on a map using MapKit.
+
+Interactive List: Swipe left to delete a city from the saved list.
+
+Easter Egg: Double-tap on the image in the About view to see a fun hidden surprise.
